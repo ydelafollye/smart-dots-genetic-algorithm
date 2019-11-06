@@ -1,6 +1,8 @@
 use ggez::nalgebra::Point2;
 use ggez::{graphics, Context, GameResult};
 
+use crate::WINDOW_WIDTH;
+
 pub struct Goal {
     pub pos: Point2<f32>,
 }
@@ -8,19 +10,12 @@ pub struct Goal {
 impl Goal {
     pub fn new() -> Goal {
         Goal {
-            pos: Point2::new(400.0, 10.0),
+            pos: Point2::new(WINDOW_WIDTH / 2.0 , 0.0),
         }
     }
     pub fn show(&mut self, ctx: &mut Context) -> GameResult {
-        let circle = graphics::Mesh::new_circle(
-            ctx,
-            graphics::DrawMode::fill(),
-            self.pos,
-            5.0,
-            0.1,
-            graphics::Color::new(255.0, 0.0, 0.0, 255.0),
-        )?;
-        graphics::draw(ctx, &circle, graphics::DrawParam::default())?;
+        let sprite = graphics::Image::new(ctx, "/pikachu.png").unwrap();
+        graphics::draw(ctx, &sprite, graphics::DrawParam::default().dest(self.pos))?;
         Ok(())
     }
 }

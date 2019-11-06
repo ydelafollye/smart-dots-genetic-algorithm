@@ -42,7 +42,7 @@ impl CustomPoint2 for Point2<f32> {
 impl Default for Dot {
     fn default() -> Dot {
         Dot {
-            pos: Point2::new(WINDOW_WIDTH / 2.0, WINDOW_HEIGHT - 10.0),
+            pos: Point2::new(WINDOW_WIDTH / 2.0, WINDOW_HEIGHT - 15.0),
             acc: Point2::new(0.0, 0.0),
             vel: Point2::new(0.0, 0.0),
             brain: Brain::new(500),
@@ -56,22 +56,15 @@ impl Default for Dot {
 
 impl Dot {
     pub fn show(&mut self, ctx: &mut Context) -> GameResult {
-        let color = |is_best: &bool| -> graphics::Color {
-            if is_best == &true {
-                graphics::Color::new(0.0, 255.0, 0.0, 255.0)
+        let pokeball = |&is_best| -> String {
+            if is_best == true {
+                "/masterball.png".to_string()
             } else {
-                graphics::WHITE
+                "/pokeball.png".to_string()
             }
         };
-        let circle = graphics::Mesh::new_circle(
-            ctx,
-            graphics::DrawMode::fill(),
-            self.pos,
-            if self.is_best { 4.0 } else { 2.0 },
-            0.1,
-            color(&self.is_best),
-        )?;
-        graphics::draw(ctx, &circle, graphics::DrawParam::default())?;
+        let sprite = graphics::Image::new(ctx, pokeball(&self.is_best)).unwrap();
+        graphics::draw(ctx, &sprite, graphics::DrawParam::default().dest(self.pos))?;
         Ok(())
     }
 
@@ -90,13 +83,13 @@ impl Dot {
     pub fn update(&mut self, goal: &Goal) {
         if self.dead == false && self.reached_goal == false {
             self.stir();
-            if self.pos.x <= 5.0
-                || self.pos.y <= 5.0
-                || self.pos.x >= WINDOW_WIDTH - 5.0
-                || self.pos.y >= WINDOW_HEIGHT - 5.0
+            if self.pos.x <= 10.0
+                || self.pos.y <= 10.0
+                || self.pos.x >= WINDOW_WIDTH - 10.0
+                || self.pos.y >= WINDOW_HEIGHT - 10.0
             {
                 self.dead = true;
-            } else if nalgebra::distance(&self.pos, &goal.pos) < 5.0 {
+            } else if nalgebra::distance(&self.pos, &goal.pos) < 10.0 {
                 self.reached_goal = true;
             } else if self.pos.x <= 600.0
                 && self.pos.y <= 310.0
